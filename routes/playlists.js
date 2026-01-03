@@ -27,6 +27,34 @@ router.post("/", async (req, res) => {
 });
 
 /* ===============================
+   GET PLAYLIST TRACKS (⚠️ MUST BE FIRST)
+================================ */
+router.get("/tracks/:playlistId", async (req, res) => {
+  const { playlistId } = req.params;
+
+  const { data, error } = await supabase
+    .from("playlist_tracks")
+    .select(`
+      tracks (
+        id,
+        title,
+        artist,
+        cover_url,
+        audio_url,
+        waveform_peaks
+      )
+    `)
+    .eq("playlist_id", playlistId);
+
+  if (error) {
+    console.error("Playlist tracks error:", error);
+    return res.status(500).json({ error: "Failed to load tracks" });
+  }
+
+  res.json({ data: data || [] });
+});
+
+/* ===============================
    GET USER PLAYLISTS
 ================================ */
 router.get("/:userId", async (req, res) => {
@@ -42,7 +70,7 @@ router.get("/:userId", async (req, res) => {
     return res.status(500).json({ error: "Failed to load playlists" });
   }
 
-  res.json(data);
+  res.json({ data });
 });
 
 /* ===============================
@@ -64,27 +92,6 @@ router.post("/add-track", async (req, res) => {
   }
 
   res.json({ success: true });
-});
-
-/* ===============================
-   GET PLAYLIST TRACKS
-================================ */
-router.get("/tracks/:playlistId", async (req, res) => {
-  const { playlistId } = req.params;
-
-  const { data, error } = await supabase
-    .from("playlist_tracks")
-    .select("tracks(*)")
-    .eq("playlist_id", playlistId);
-
-  if (error) {
-    return res.status(500).json({ error: "Failed to load tracks" });
-  }
-
-  // flatten response
-  const tracks = data.map((row) => row.tracks);
-
-  res.json(tracks);
 });
 
 /* ===============================
