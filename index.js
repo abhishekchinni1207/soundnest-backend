@@ -15,16 +15,23 @@ const PORT = process.env.PORT || 5000;
    🌐 CORS (DEV + PROD SAFE)
 ================================ */
 const allowedOrigins = [
-  "http://localhost:5173",          // local dev
-  process.env.FRONTEND_URL,         // render frontend
-].filter(Boolean);
+  "http://localhost:5173",
+  "https://soundnest-frontend.vercel.app"
+];
 
 app.use(
   cors({
-    origin: allowedOrigins,
-    credentials: true,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    credentials: true
   })
 );
+
 
 /* ===============================
    🧠 BODY PARSER
