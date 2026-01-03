@@ -1,0 +1,30 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables (NEVER commit)
+.env
+.env.local
+.env.production
+
+# Uploads & temp files
+uploads/
+tmp/
+*.raw
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# FFmpeg temp
+*.wav
+*.mp3
+
+# Build cache
+.cache/
